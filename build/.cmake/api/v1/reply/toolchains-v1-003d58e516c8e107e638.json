@@ -1,0 +1,98 @@
+{
+	"kind" : "toolchains",
+	"toolchains" : 
+	[
+		{
+			"compiler" : 
+			{
+				"id" : "GNU",
+				"implicit" : 
+				{
+					"includeDirectories" : 
+					[
+						"C:/Users/User/AppData/Local/mingw64/include/c++/13.2.0",
+						"C:/Users/User/AppData/Local/mingw64/include/c++/13.2.0/x86_64-w64-mingw32",
+						"C:/Users/User/AppData/Local/mingw64/include/c++/13.2.0/backward",
+						"C:/Users/User/AppData/Local/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include",
+						"C:/Users/User/AppData/Local/mingw64/include",
+						"C:/Users/User/AppData/Local/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0/include-fixed",
+						"C:/Users/User/AppData/Local/mingw64/x86_64-w64-mingw32/include"
+					],
+					"linkDirectories" : 
+					[
+						"C:/Users/User/AppData/Local/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0",
+						"C:/Users/User/AppData/Local/mingw64/lib/gcc",
+						"C:/Users/User/AppData/Local/mingw64/x86_64-w64-mingw32/lib",
+						"C:/Users/User/AppData/Local/mingw64/lib"
+					],
+					"linkFrameworkDirectories" : [],
+					"linkLibraries" : 
+					[
+						"stdc++",
+						"mingw32",
+						"gcc_s",
+						"gcc",
+						"moldname",
+						"mingwex",
+						"kernel32",
+						"mcfgthread",
+						"kernel32",
+						"ntdll",
+						"advapi32",
+						"shell32",
+						"user32",
+						"kernel32",
+						"mingw32",
+						"gcc_s",
+						"gcc",
+						"moldname",
+						"mingwex",
+						"kernel32",
+						"mcfgthread",
+						"kernel32",
+						"ntdll"
+					]
+				},
+				"path" : "C:/Users/User/AppData/Local/mingw64/bin/c++.exe",
+				"version" : "13.2.0"
+			},
+			"language" : "CXX",
+			"sourceFileExtensions" : 
+			[
+				"C",
+				"M",
+				"c++",
+				"cc",
+				"cpp",
+				"cxx",
+				"m",
+				"mm",
+				"mpp",
+				"CPP",
+				"ixx",
+				"cppm",
+				"ccm",
+				"cxxm",
+				"c++m"
+			]
+		},
+		{
+			"compiler" : 
+			{
+				"implicit" : {},
+				"path" : "C:/Users/User/AppData/Local/mingw64/bin/windres.exe"
+			},
+			"language" : "RC",
+			"sourceFileExtensions" : 
+			[
+				"rc",
+				"RC"
+			]
+		}
+	],
+	"version" : 
+	{
+		"major" : 1,
+		"minor" : 0
+	}
+}
