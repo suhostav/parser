@@ -12,6 +12,6 @@ void Test3Digits();
 
 int main(){
     cout << std::boolalpha;
-    Test3Digits();
+    Test2();
     return 0;
 }

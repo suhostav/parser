@@ -8,15 +8,16 @@
 #include <variant>
 #include <vector>
 
+using std::pair, std::string, std::string_view, std::format, std::vector;
+using namespace std::literals;
+
 template <typename T>
-using Success = std::pair<T, std::string&>;
-using Failure = std::string;
+using Success = pair<T, string_view>;
+using Failure = string_view;
 template <typename T>
 using ParseResult = std::variant<Success<T>, Failure>;
 template <typename T>
-using Parser = std::function<ParseResult<T>(std::string&)>;
-using std::pair, std::string, std::format, std::vector;
-using namespace std::literals;
+using Parser = std::function<ParseResult<T>(string_view)>;
 
 template <typename T>
 bool IsSuccess(const ParseResult<T>& r){
@@ -24,18 +25,18 @@ bool IsSuccess(const ParseResult<T>& r){
 }
 
 template <typename T>
-string GetInputOrMessage(const ParseResult<T>& r){
+string_view GetInputOrMessage(const ParseResult<T>& r){
     return IsSuccess(r) ? get<Success<T>>(r).second : get<Failure>(r);
 }
 
 template<typename T>
 Parser<T> satisfy(std::function<bool(T)> predicate){
-    auto innerFn = [predicate](string& input){
+    auto innerFn = [predicate](string_view input){
         if(input.empty()){
             return ParseResult<T>{"No more input"s};
         } else if(predicate(input[0])){
             char c = input[0];
-            input.erase(0, 1);
+            input = input.substr(1);
             Success res{c, input};
             return ParseResult<T>{res};
         } else {
@@ -52,8 +53,8 @@ Parser<T> parseDigit (){
     return satisfy<T>([](char c){return isdigit(c);});
 }
 
-std::pair<std::string, std::string&> pchar1(char charToMatch, std::string& input);
-ParseResult<char> pchar(char charToMatch, std::string& input);
+pair<string_view, string_view> pchar1(char charToMatch, string_view input);
+ParseResult<char> pchar(char charToMatch, string_view input);
 
 template <typename T>
 ParseResult<T> run(Parser<T> parser, string& input){
@@ -62,7 +63,7 @@ ParseResult<T> run(Parser<T> parser, string& input){
 
 template <typename T, typename K>
 Parser<std::pair<T,K>> andThen(Parser<T> parser1, Parser<K> parser2){
-    auto innerFn = [parser1, parser2](string& input) {
+    auto innerFn = [parser1, parser2](string_view input) {
         auto res1 = parser1(input);
         if(!IsSuccess(res1)){
             return ParseResult<std::pair<T,K>>(std::get<Failure>(res1));
@@ -82,7 +83,7 @@ Parser<std::pair<T,K>> andThen(Parser<T> parser1, Parser<K> parser2){
 
 template <typename T>
 Parser<T> orElse(Parser<T> parser1, Parser<T> parser2){
-    auto innerFn = [parser1, parser2](string& input){
+    auto innerFn = [parser1, parser2](string_view input){
         auto res1 = parser1(input);
         if(IsSuccess(res1)){
             return ParseResult<T>(res1);
@@ -95,7 +96,7 @@ Parser<T> orElse(Parser<T> parser1, Parser<T> parser2){
 
 template <typename T>
 Parser<T> choice(vector<Parser<T>> listOfParsers){
-    auto innerFn = [listOfParsers](string& input){
+    auto innerFn = [listOfParsers](string_view input){
         Parser<T> parser = nullptr;
         bool first = true;
         for(auto p : listOfParsers){
@@ -116,7 +117,7 @@ Parser<char> anyOf(string listOfChars);
 
 template <typename A, typename B>
 Parser<B> mapP (std::function<B(A)> f, Parser<A> parser){
-    auto innerFn = [f, parser](string& input){
+    auto innerFn = [f, parser](string_view input){
         auto res = parser(input);
         if(IsSuccess(res)){
             auto [val, rem] = std::get<Success<A>>(res);

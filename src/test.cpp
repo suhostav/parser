@@ -7,17 +7,20 @@ using namespace std;
 
 string GetInput(){
     string line;
-    ifstream f{"input.txt", };
+    ifstream f{"../input.txt", };
+    if(!f){
+        std::cerr << "Error in opening file input.txt\n"s;
+    }
     getline(f, line);
     return line;
 }
 
-pair<bool, string&> parseA(string& input){
+pair<bool, string_view> parseA(string_view input){
     static string null_string{""};
     if (input.empty()){
         return {false, null_string};
     } else if(input[0] == 'A'){
-        input.erase(0, 1);
+        input = input.substr(1);
         return {true, input};
     } else {
         return {false, input};

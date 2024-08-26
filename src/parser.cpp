@@ -2,22 +2,22 @@
 
 using namespace std;
 
-pair<string, string&> pchar1(char charToMatch, string& input){
+pair<string_view, string_view> pchar1(char charToMatch, string_view input){
     if(input.empty()){
         return {"No more input"s, input};
     } else if(input[0] == charToMatch){
-        input.erase(0,1);
+        input = input.substr(1);
         return {format("Found {}", charToMatch), input};
     } else {
         return {format("Expecting '{}'. Got '{}'", charToMatch, input[0]), input}; 
     }
 }
 
-ParseResult<char> pchar(char charToMatch, string& input){
+ParseResult<char> pchar(char charToMatch, string_view input){
     if(input.empty()){
         return "No more input"s;
     } else if(input[0] == charToMatch){
-        input.erase(0, 1);
+        input = input.substr(1);
         Success res{charToMatch, input};
         return res;
     } else {
