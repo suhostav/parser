@@ -4,24 +4,24 @@ using namespace std;
 
 pair<string_view, string_view> pchar1(char charToMatch, string_view input){
     if(input.empty()){
-        return {"No more input"s, input};
+        return {statics::msg_no_input, input};
     } else if(input[0] == charToMatch){
         input = input.substr(1);
-        return {format("Found {}", charToMatch), input};
+        return {format(statics::msg_found, charToMatch), input};
     } else {
-        return {format("Expecting '{}'. Got '{}'", charToMatch, input[0]), input}; 
+        return {format(statics::msg_expecting, charToMatch, input[0]), input}; 
     }
 }
 
 ParseResult<char> pchar(char charToMatch, string_view input){
     if(input.empty()){
-        return "No more input"s;
+        return string{statics::msg_no_input};
     } else if(input[0] == charToMatch){
         input = input.substr(1);
         Success res{charToMatch, input};
         return res;
     } else {
-        return {format("Expecting '{}'. Got '{}'", charToMatch, input[0])};
+        return {format(statics::msg_expecting, charToMatch, input[0])};
     }
 }
 
@@ -37,3 +37,13 @@ Parser<char> anyOf(string listOfChars){
     Parser<char> parser = choice<char>(parsers);
     return parser;
 }
+
+int plus2(int x, int y){
+    return x + y;
+}
+
+// Parser<int> addP(Parser<int> x, Parser<int> y){
+//     std::function<int(int,int)>f(plus2);
+//     Parser<int> parser = lift2<int,int,int>(f, x, y);
+//     return parser;
+// }

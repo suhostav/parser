@@ -93,7 +93,8 @@ void TestComposed(){
         string input{"ABC"};
         Parser<char> pcharA = pchar('A');
         Parser<char> pcharB = pchar('B');
-        auto parser = andThen(pcharA, pcharB);
+        // auto parser = andThen(pcharA, pcharB);
+        auto parser = pcharA >> pcharB;
         auto res = parser(input);
         if(IsSuccess(res)){
             auto [p, rest] = std::get<0>(res);
@@ -101,7 +102,7 @@ void TestComposed(){
         }
     }
     {
-        string input {"ABC"};
+        string input {"BXY"};
         Parser<char> pcharA = pchar('A');
         Parser<char> pcharB = pchar('B');
         auto parser = orElse(pcharA, pcharB);
@@ -114,12 +115,8 @@ void TestComposed(){
         }
     }
     {
-        string input {"AQZ"};
-        Parser<char> parseA = pchar('A');
-        Parser<char> parseB = pchar('B');
-        Parser<char> parseC = pchar('C');
-        auto bOrElseC = orElse(parseB, parseC);
-        auto aAndThenBorC = andThen(parseA, bOrElseC);
+        string input {"ACZQBZ"};
+        auto aAndThenBorC = pchar('A') >> (pchar('B') | pchar('C'));
         auto res = aAndThenBorC(input);
         if(IsSuccess(res)){
             auto [p, rest] = std::get<0>(res);
@@ -130,9 +127,11 @@ void TestComposed(){
     }
 }
 
+
+
 void TestAnyOf(){
     {
-        string input {"AQZ"};
+        string input {"DQZ"};
         Parser<char> parseA = pchar('A');
         Parser<char> parseB = pchar('B');
         Parser<char> parseC = pchar('C');
@@ -147,7 +146,7 @@ void TestAnyOf(){
         }
     }
     {
-        string input{"ABC"};
+        string input{"CBC"};
         Parser<char> parser = anyOf("ABC"s);
         auto res = parser(input);
         if(IsSuccess(res)){
@@ -163,7 +162,8 @@ void Test3Digits(){
     {
         string input = GetInput();
         Parser<char> pDigit = parseDigit<char>();
-        auto p3Digits =  andThen(andThen(pDigit, pDigit), pDigit);
+        // auto p3Digits =  andThen(andThen(pDigit, pDigit), pDigit);
+        auto p3Digits = pDigit >> pDigit >> pDigit;
         std::function<string(pair<pair<char,char>,char>)> transformTuple = [](auto t){
             string res;
             res += t.first.first;
@@ -171,20 +171,52 @@ void Test3Digits(){
             res += t.second;
             return res;
         };
-
-        Parser<string> parser = mapP(transformTuple, p3Digits);
+        // auto res = p3Digits(input);
+        // if(IsSuccess(res)){
+        //     auto r = std::get<0>(res);
+        //     std::cout << transformTuple(r.first) << endl;
+        // } else {
+        //      cout << GetInputOrMessage(res) << endl;
+        // }
+        // Parser<string> parser = mapP(transformTuple, p3Digits);
+        // Parser<string> parser = p3Digits ^ transformTuple;
 
         std::function<int(string)> toInt = [](string s){ return std::stoi(s); };
 
-        Parser<int> intParser = mapP(toInt, parser);
+        // Parser<int> intParser = mapP(toInt, parser);
+        // Parser<int> intParser = toInt ^ parser;
+        Parser<int> intParser = pDigit >> pDigit >> pDigit ^ transformTuple ^ toInt;
 
         auto res = intParser(input);
         if(IsSuccess(res)){
-            auto [c, rest] = std::get<0>(res);
-            int r = c + 1000;
-            cout << r << ", " << rest << endl;
+            auto [num, rest] = std::get<0>(res);
+            cout << num << ", " << rest << endl;
         } else {
             cout << GetInputOrMessage(res) << endl;
         }
     }    
+}
+
+void TestApply(){
+    {
+        string input = GetInput();
+        Parser<char> pDigit = parseDigit<char>();
+        auto p3Digits = pDigit >> pDigit >> pDigit;
+        std::function<string(pair<pair<char,char>,char>)> transformTuple = [](auto t){
+            string res;
+            res += t.first.first;
+            res += t.first.second;
+            res += t.second;
+            return res;
+        };
+        auto transformParser = returnP(transformTuple);
+        auto stringParser = applyP(transformParser, p3Digits);
+        auto res = stringParser(input);
+        if(IsSuccess(res)){
+            cout << std::get<0>(res).first << endl;
+        } else {
+            cout << GetInputOrMessage(res) << endl;
+        }
+
+    }
 }

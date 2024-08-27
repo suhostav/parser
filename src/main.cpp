@@ -9,9 +9,10 @@ void Test4();
 void TestComposed();
 void TestAnyOf();
 void Test3Digits();
+void TestApply();
 
 int main(){
     cout << std::boolalpha;
-    Test2();
+    TestApply();
     return 0;
 }
